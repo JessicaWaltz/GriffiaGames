@@ -1,0 +1,94 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Ground
+  - house
+  - Enemy
+  - Spring
+  - Coin
+  - Paralax01
+  - Paralax02
+  - Paralax03
+  - Push
+  - Climb
+  - Wall
+  - NeedWall
+  - water
+  - Ground2
+  - grab
+  - projectile
+  - trigger
+  - endScroll
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Background1
+  - Ground1
+  - Front
+  - Player
+  - sky
+  - Background2
+  - Enemy
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Sky
+    uniqueID: 1054495159
+    locked: 0
+  - name: paralax3
+    uniqueID: 4141284889
+    locked: 0
+  - name: paralax2
+    uniqueID: 2953528975
+    locked: 0
+  - name: paralax1
+    uniqueID: 2040100537
+    locked: 0
+  - name: Background2
+    uniqueID: 1793961537
+    locked: 0
+  - name: Background1
+    uniqueID: 3708807195
+    locked: 0
+  - name: GroundFurtherback
+    uniqueID: 2936420231
+    locked: 0
+  - name: Ground1
+    uniqueID: 2706684049
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Enemy
+    uniqueID: 4147377521
+    locked: 0
+  - name: Player
+    uniqueID: 2656447219
+    locked: 0
+  - name: Front
+    uniqueID: 35501509
+    locked: 0
