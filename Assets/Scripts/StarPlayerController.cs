@@ -52,13 +52,17 @@ public class StarPlayerController : MonoBehaviour
 
     private AudioSource audioSource;
 
+    public SpriteRenderer myRenderer;
+    public Shader shaderGUItext;
+    public Shader shaderSpritesDefault;
+
     //Have this be StarPlayerController, This is the only one that has an update, All controllers that Star uses will be in here
     //all related animations should be here and audio clips to be called
 
     // sounds
 
     //movement,jump, flip, ground collisions all in one controller but different functions to call if used
-    
+
     //Damage taken should be its own controller
 
     //Coin collection
@@ -75,6 +79,10 @@ public class StarPlayerController : MonoBehaviour
     {
         anim = gameObject.GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+
+        myRenderer = gameObject.GetComponent<SpriteRenderer>();
+        shaderGUItext = Shader.Find("GUI/Text Shader");
+        shaderSpritesDefault = Shader.Find("Sprites/Default"); // or whatever sprite shader is being used
     }
     // Update is called once per frame
     void Update()
