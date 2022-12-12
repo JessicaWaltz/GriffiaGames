@@ -52,9 +52,6 @@ public class StarPlayerController : MonoBehaviour
 
     private AudioSource audioSource;
 
-    public SpriteRenderer myRenderer;
-    public Shader shaderGUItext;
-    public Shader shaderSpritesDefault;
 
     //Have this be StarPlayerController, This is the only one that has an update, All controllers that Star uses will be in here
     //all related animations should be here and audio clips to be called
@@ -80,13 +77,11 @@ public class StarPlayerController : MonoBehaviour
         anim = gameObject.GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
 
-        myRenderer = gameObject.GetComponent<SpriteRenderer>();
-        shaderGUItext = Shader.Find("GUI/Text Shader");
-        shaderSpritesDefault = Shader.Find("Sprites/Default"); // or whatever sprite shader is being used
     }
     // Update is called once per frame
     void Update()
     {
+        
         if (isActive == true)
         {
             isUp = Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W);
@@ -158,52 +153,3 @@ public class StarPlayerController : MonoBehaviour
 
     }
 }
-
-
-
-/*
- if (collision.gameObject.tag == "NeedWall")
-        {
-            AudioPlayerSoft(hit);
-            nockedBack = true;
-            isSpecialJump = true;
-            xLocationEnemy = collision.gameObject.GetComponent<Rigidbody2D>().transform.position.x;
-            xLocationPlayer = transform.position.x;
-        }
-*/
-
-/*void DamageCheck() {
-        if (takeDamage == true)//if enemy hit player
-        {
-            if (xLocationEnemy > xLocationPlayer)
-            {
-                // enemy is to right so player damage jumps left
-                rb.velocity = new Vector2(-175, jumpPower * 0.75f);
-            }
-            else
-            {
-                // enemy is to left so player damage jumps right
-                rb.velocity = new Vector2(175, jumpPower * 0.75f);
-            }
-            anim.SetBool("takeDamage", takeDamage);
-            takeDamage = false;
-            isSpecialJump = true;
-        }
-        else if (nockedBack == true)//if enemy hit player
-        {
-            //this is currently adding to current y velocity we want it to replace
-            if (xLocationEnemy > xLocationPlayer)
-            {
-                // enemy is to right so player damage jumps left
-                rb.velocity = new Vector2(-125, jumpPower * 1.25f);
-            }
-            else
-            {
-                // enemy is to left so player damage jumps right
-                rb.velocity = new Vector2(125, jumpPower * 1.25f);
-            }
-            anim.SetBool("takeDamage", nockedBack);
-            nockedBack = false;
-            isSpecialJump = true;
-        }
-    }*/

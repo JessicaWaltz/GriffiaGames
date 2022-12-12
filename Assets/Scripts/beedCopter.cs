@@ -103,6 +103,7 @@ public class beedCopter : MonoBehaviour
     {
         if (collision.gameObject.tag == "projectile") {
             health -= 1;
+            gameObject.GetComponent<damageFlash>().StartDamageAnimation(0.1f);
             if (health <= 0) {
                 Instantiate(poof, transform.position, transform.rotation);
                 Destroy(gameObject);
