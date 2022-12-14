@@ -20,10 +20,14 @@ public class beedCopter : MonoBehaviour
 
     public bool decendComplete = true;
     public float decendAmount = 50;
-    private bool noShootYet = true;
-    public float shootInterval = 1.5f;
+    public float shootInterval = 3f;
 
     public float health = 2;
+
+    private float coolDownTimer = 1f;
+    private bool coolDownComplete = true;
+    private float firingRange = 150f;
+    private float distanceToPlayer;
 
 
 
@@ -33,25 +37,16 @@ public class beedCopter : MonoBehaviour
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         startingY = gameObject.transform.position.y - decendAmount;
         player = GameObject.FindGameObjectWithTag("Player");
-        if(decendComplete != true)
-            Invoke("LaunchProjectile", 2f);
     }
     //want to move up and down while firing always looking at player
     
     void Update()
     {
         anim.SetBool("shoot",shoot);
-        if (shoot) {
-            Invoke("LaunchProjectile", 0f);
-            shoot = false;
-        }
+        shoot = false;
 
-        if (noShootYet && decendComplete)
-        {
-            noShootYet = false;
-            Invoke("ShootisTrue", shootInterval);
-        }
-        else if (!decendComplete)
+        //if havent finished decend then keep decending else go up and down
+        if (!decendComplete)
         {
             GetComponent<Rigidbody2D>().velocity = new Vector2(0, -speed);
             if (gameObject.transform.position.y <= startingY){ decendComplete = true; }
@@ -63,6 +58,7 @@ public class beedCopter : MonoBehaviour
             else { goingUp = !goingUp; }
         }
 
+        //Change direction 
         if (facingLeft == true && player.transform.position.x > transform.position.x)
         {
             Flip();
@@ -72,6 +68,13 @@ public class beedCopter : MonoBehaviour
         {
             Flip();
             facingLeft = true;
+        }
+
+        //if player is within range and shoot cooldown reached then shoot
+        distanceToPlayer = Mathf.Abs(player.transform.position.x - transform.position.x);
+        if (coolDownComplete && distanceToPlayer < firingRange) {
+            LaunchProjectile();
+            shoot = true;
         }
     }
     void Flip() {
@@ -93,17 +96,20 @@ public class beedCopter : MonoBehaviour
             ? speedX
             : -speedX;
         projectile.GetComponent<projectileLogic>().velocityY = speedY;
+
+        coolDownComplete = false;
+        Invoke("CoolDown", coolDownTimer);
     }
-    void ShootisTrue()
-    {
-        shoot = true;
-        Invoke("ShootisTrue", 1.5f);
+    void CoolDown() {
+        coolDownComplete = true;
     }
+  
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "projectile") {
             health -= 1;
             gameObject.GetComponent<damageFlash>().StartDamageAnimation(0.1f);
+            coolDownTimer = coolDownTimer / 1.5f;
             if (health <= 0) {
                 Instantiate(poof, transform.position, transform.rotation);
                 Destroy(gameObject);
@@ -112,3 +118,43 @@ public class beedCopter : MonoBehaviour
             
     }
 }
+
+/*
+Pead behavior
+- on spawn travel towards set direction 
+- if player is in direction and within sight range(and line of sight):
+    - stop moving and give indicator that player was seen
+    - charge in direction of player
+    - once charge is over turn around 
+    - repeat
+- if player after certain amount of time is not in range and not in line or site
+    - turn around
+    - repeat
+ 
+Beed behavior 
+- On spawn decend from above camera
+- move up and down 
+- always face player 
+- if player is within range then interval shooting
+    - (optional- if player is super close shoot not so far)
+
+Sead behavior
+- spawn in river
+- move back and forth horizontally (width of area)
+- when pass player for the x time is up stop moving
+    - after brief pause, shoot out of water 
+    - gravity takes them back down
+    - repeat
+
+Leed Behavior
+- does not move. 
+- sends out multiple gravity-less spikey projectiles
+
+Need Behavior
+- spawn on ground
+- hop to player
+
+Farmer Pead mini-boss behavior
+
+
+ */

@@ -147,6 +147,9 @@ MonoBehaviour:
   velocityX: 150
   velocityY: 75
   starPoof: {fileID: 783671668285627707, guid: 3412f28698206584a96a42ebb602ecaa, type: 3}
+  AllEnds: []
+  AllEnemies: []
+  isEnemyProjectile: 1
 --- !u!82 &891271347227199479
 AudioSource:
   m_ObjectHideFlags: 0
