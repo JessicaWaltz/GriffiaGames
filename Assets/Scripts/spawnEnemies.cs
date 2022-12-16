@@ -14,7 +14,7 @@ public class spawnEnemies : MonoBehaviour
     //bead points
     public float[] range;
     public float[] speed;
-    public bool[] goingUp;
+    public bool[] goingPositiveDirection;
     public bool[] decendComplete;
     public float[] decendAmount;
     public float[] shootInterval;
@@ -48,16 +48,32 @@ public class spawnEnemies : MonoBehaviour
             {
                 if (spawnWho[i].GetComponent<beedCopter>() != null)
                 {
-                    StartCoroutine(SpawnBeed(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], speed[i], goingUp[i], decendComplete[i], decendAmount[i], shootInterval[i]));
+                    StartCoroutine(SpawnBeed(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], speed[i], goingPositiveDirection[i], decendComplete[i], decendAmount[i], shootInterval[i]));
                 }
-                //else if (pead) { }
+                else if (spawnWho[i].GetComponent<PeadBuggy>() != null) {
+                    StartCoroutine(SpawnPead(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i] , health[i], range[i], speed[i], goingPositiveDirection[i]));
+                }
                 //else if (sead) { }
                 //else if (leed) { }
                 //else if (need) { }
             }
         }
     }
+    IEnumerator SpawnPead(GameObject spawning, float locationX, float locationY, float delayTime, float health, float range, float speed, bool goingRight) 
+    {
+        yield return new WaitForSeconds(delayTime);
 
+        Vector3 position = new Vector3(locationX, locationY, 0);
+        Quaternion rotation = new Quaternion();
+
+        spawning.GetComponent<PeadBuggy>().health = health;
+        spawning.GetComponent<PeadBuggy>().speed = speed;
+        spawning.GetComponent<PeadBuggy>().lineOfSiteRangeX = range;
+        spawning.GetComponent<PeadBuggy>().facingLeft = !goingRight;
+
+        Instantiate(spawning, position, rotation);
+
+    }
     IEnumerator SpawnBeed(GameObject spawning, float locationX, float locationY,
         float delayTime, float health, float range, float speed, bool goingUp, bool decendComplete,
         float decendAmount, float shootInterval)

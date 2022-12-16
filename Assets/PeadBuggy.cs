@@ -8,7 +8,7 @@ public class PeadBuggy : MonoBehaviour
     private SpriteRenderer mySpriteRenderer;
     public Animator anim;
     private GameObject player;
-    private bool facingLeft = true;
+    public bool facingLeft = true;
     public float speed = 50f;
 
     public float lineOfSiteRangeY;
@@ -17,6 +17,7 @@ public class PeadBuggy : MonoBehaviour
     public float currentState = 1;
     public bool isMoving = false;
     private bool isOnGround = false;
+    private bool cancelTurnAround = false;
 
     public GameObject poof;
 
@@ -56,6 +57,7 @@ public class PeadBuggy : MonoBehaviour
             currentState = 3;
             isOnGround = false;
             isMoving = false;
+            cancelTurnAround = true;
 
         }
         //state 3 we charge for 1.5f soon as we hit ground
@@ -72,11 +74,12 @@ public class PeadBuggy : MonoBehaviour
         //state 4 charge is over, we turn around, start state 1 again
     }
     private void TurnAround() {
-        if (currentState == 1) {
+        if (currentState == 1 && !cancelTurnAround) {
             Flip();
             facingLeft = !facingLeft;
             isMoving = false;
         }
+        else { cancelTurnAround = false;}
     }
     private void TurnAround2() {
         if (currentState == 3)
@@ -86,6 +89,7 @@ public class PeadBuggy : MonoBehaviour
             isMoving = false;
             currentState = 1;
         }
+
     }
     private void Move()
     {
