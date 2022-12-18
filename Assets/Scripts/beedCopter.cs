@@ -1,7 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+// add y range functionality
+// add sound effects for when hit
+// add sounf effect for when jump 
+// add vroom sound?
 public class beedCopter : MonoBehaviour
 {
     private bool facingLeft = true;
