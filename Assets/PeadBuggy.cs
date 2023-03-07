@@ -38,6 +38,7 @@ public class PeadBuggy : MonoBehaviour
             if (SeePlayer())
             {
                 GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
+                CancelInvoke("TurnAround");
                 currentState = 2;
             }
             else
@@ -53,16 +54,17 @@ public class PeadBuggy : MonoBehaviour
         //state 2 we notice the player, do a tiny jump
         else if (currentState == 2)
         {
-            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 3*speed);
+            GetComponent<Rigidbody2D>().velocity = new Vector2(0, 3 * speed);
             currentState = 3;
             isOnGround = false;
             isMoving = false;
-            cancelTurnAround = true;
 
         }
         //state 3 we charge for 1.5f soon as we hit ground
-        else if (currentState == 3) {
-            if (isOnGround) {
+        else if (currentState == 3)
+        {
+            if (isOnGround)
+            {
                 if (!isMoving)
                 {
                     isMoving = true;
@@ -71,10 +73,22 @@ public class PeadBuggy : MonoBehaviour
                 MoveFast();
             }
         }
-        //state 4 charge is over, we turn around, start state 1 again
+        //state 3.5 charge is over, we turn around, start state 1 again
+        //state 4 there was a collision! 
+        else if (currentState == 4) {
+            if (isOnGround)
+            {
+              Invoke("Restart", 1.0f);
+              currentState = 5;
+            }
+
+        }
+    }
+    private void Restart() {
+        currentState = 1;
     }
     private void TurnAround() {
-        if (currentState == 1 && !cancelTurnAround) {
+        if (currentState == 1) {
             Flip();
             facingLeft = !facingLeft;
             isMoving = false;
@@ -120,24 +134,13 @@ public class PeadBuggy : MonoBehaviour
         theScale.x *= -1;
         transform.localScale = theScale;
     }
-    /*
-    if (facingLeft == true && player.transform.position.x > transform.position.x)
-        {
-            Flip();
-            facingLeft = false;
-        }
-        else if(facingLeft == false && player.transform.position.x < transform.position.x)
-        {
-            Flip();
-            facingLeft = true;
-        }
-    */
+
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag == "Ground")
         {
             isOnGround = true;
         }
-        if (collision.gameObject.tag == "projectile")
+        else if (collision.gameObject.tag == "projectile")
         {
             health -= 1;
             gameObject.GetComponent<damageFlash>().StartDamageAnimation(0.1f);
@@ -147,5 +150,27 @@ public class PeadBuggy : MonoBehaviour
                 Destroy(gameObject);
             }
         }
+        else if (collision.gameObject.tag == "Player") {
+            Vector3 contactPoint = collision.contacts[0].point;
+            Vector3 center = collision.collider.bounds.center;
+            bool right = contactPoint.x > center.x;
+            bool top = contactPoint.y > center.y;
+            CancelInvoke();
+            if (right)
+            {
+                GetComponent<Rigidbody2D>().velocity = new Vector2(3 * speed, 3 * speed);
+            }
+            else {
+                GetComponent<Rigidbody2D>().velocity = new Vector2(-3 * speed, 3 * speed);
+            }
+            isOnGround = false;
+            isMoving = false;
+            currentState = 4;
+
+
+            // bounce away 
+            //move to state 6 waiting to fall to ground once on ground move to state 7 wait a half seccond to start state 1
+        }
+
     }
 }
