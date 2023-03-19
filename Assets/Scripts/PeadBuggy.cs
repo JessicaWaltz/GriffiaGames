@@ -171,6 +171,10 @@ public class PeadBuggy : MonoBehaviour
             // bounce away 
             //move to state 6 waiting to fall to ground once on ground move to state 7 wait a half seccond to start state 1
         }
+        else if (collision.gameObject.tag == "Enemy")
+        {
+            Physics2D.IgnoreCollision(collision.gameObject.GetComponent<Collider2D>(), GetComponent<Collider2D>());
+        }
 
     }
 }
