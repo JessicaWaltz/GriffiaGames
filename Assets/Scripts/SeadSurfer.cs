@@ -11,7 +11,7 @@ public class SeadSurfer : MonoBehaviour
     public bool facingLeft = true;
     public float speed = 50f;
 
-    public float lineOfSiteRangeY;
+    public float lineOfSiteRangeY = 100;
     public float lineOfSiteRangeX = 120;
 
     public float currentState = 1;
@@ -36,21 +36,10 @@ public class SeadSurfer : MonoBehaviour
                 GetComponent<Rigidbody2D>().velocity = new Vector2(0, GetComponent<Rigidbody2D>().velocity.y);
                 currentState = 2;
             }
-            else
-            {
-                Move();
-            }
+            else{ Move(); }
         }
         else if (currentState == 2)
         {
-            /* have noticed animation then...
-               move to player
-               have about to jump animation
-               then jump 
-            */
-
-            //play exclamation for notice
-            //pause briefly
             Vector3 spawnPosition = new Vector3(transform.position.x, transform.position.y + 20, 0);
             Instantiate(exclamation, spawnPosition, transform.rotation);
             Invoke("TimerToThree", 0.5f);
@@ -58,12 +47,8 @@ public class SeadSurfer : MonoBehaviour
         }
         else if (currentState == 3) 
         {
-            if (SeePlayer(15)) {
-                currentState = 4;
-            }
-            else {
-                Move(true);
-            }
+            if (SeePlayer(15)) {currentState = 4;}
+            else {Move(true);}
         }
         else if (currentState == 4) 
         {
@@ -101,8 +86,10 @@ public class SeadSurfer : MonoBehaviour
         if (distance < 0) {
             distance = lineOfSiteRangeX;
         }
-        float distanceFromPlayer = player.transform.position.x - transform.position.x;
-        if ((distanceFromPlayer <= distance && distanceFromPlayer > 0) || (-distanceFromPlayer <= distance && distanceFromPlayer < 0))
+        float distanceFromPlayerX = player.transform.position.x - transform.position.x;
+        float distanceFromPlayerY = player.transform.position.y - transform.position.y;
+        if (((distanceFromPlayerX <= distance && distanceFromPlayerX > 0) || (-distanceFromPlayerX <= distance && distanceFromPlayerX < 0)) &&
+            ((distanceFromPlayerY >= lineOfSiteRangeY && distanceFromPlayerY > 0) || (-distanceFromPlayerY >= lineOfSiteRangeY && distanceFromPlayerY < 0)))
         {
             return true;
         }
@@ -116,7 +103,7 @@ public class SeadSurfer : MonoBehaviour
         if (toPlayer)
         {
             bool playerIsLeft = (player.transform.position.x - transform.position.x) < 0;
-            float fastSpeed = (float)(speed * 1.5);
+            float fastSpeed = (float)(speed * 1.75);
             if (facingLeft && playerIsLeft) { GetComponent<Rigidbody2D>().velocity = new Vector2(-fastSpeed, 0); }
             else if (!facingLeft && !playerIsLeft) { GetComponent<Rigidbody2D>().velocity = new Vector2(fastSpeed, 0); }
             else if (facingLeft && !playerIsLeft) { Flip(); GetComponent<Rigidbody2D>().velocity = new Vector2(-fastSpeed, 0); }
@@ -142,7 +129,7 @@ public class SeadSurfer : MonoBehaviour
                 Destroy(gameObject);
             }
         }
-        else if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Player")
+        else if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Player" || collision.gameObject.tag == "Enemy")
         {
             Physics2D.IgnoreCollision(collision.gameObject.GetComponent<Collider2D>(), GetComponent<Collider2D>());
         }

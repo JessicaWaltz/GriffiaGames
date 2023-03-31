@@ -50,12 +50,22 @@ public class spawnEnemies : MonoBehaviour
                 {
                     StartCoroutine(SpawnBeed(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], speed[i], goingPositiveDirection[i], decendComplete[i], decendAmount[i], shootInterval[i]));
                 }
-                else if (spawnWho[i].GetComponent<PeadBuggy>() != null) {
-                    StartCoroutine(SpawnPead(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i] , health[i], range[i], speed[i], goingPositiveDirection[i]));
+                else if (spawnWho[i].GetComponent<PeadBuggy>() != null)
+                {
+                    StartCoroutine(SpawnPead(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], speed[i], goingPositiveDirection[i]));
                 }
-                //else if (sead) { }
-                //else if (leed) { }
-                //else if (need) { }
+                else if (spawnWho[i].GetComponent<SeadSurfer>() != null)
+                {
+                    StartCoroutine(SpawnSead(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], speed[i], goingPositiveDirection[i]));
+                }
+                //else if (spawnWho[i].GetComponent<Leed>() != null)
+                //{
+
+                //}
+                //else if (spawnWho[i].GetComponent<Need>() != null)
+                //{
+
+                //}
             }
         }
     }
@@ -93,4 +103,37 @@ public class spawnEnemies : MonoBehaviour
 
         Instantiate(spawning, position, rotation);
     }
+    IEnumerator SpawnSead(GameObject spawning, float locationX, float locationY, float delayTime, float health, float range, float speed, bool goingRight) {
+        yield return new WaitForSeconds(delayTime);
+
+        Vector3 position = new Vector3(locationX, locationY, 0);
+        Quaternion rotation = new Quaternion();
+
+        spawning.GetComponent<SeadSurfer>().health = health;
+        spawning.GetComponent<SeadSurfer>().speed = speed;
+        spawning.GetComponent<SeadSurfer>().lineOfSiteRangeX = range;
+        spawning.GetComponent<SeadSurfer>().facingLeft = !goingRight;
+
+        Instantiate(spawning, position, rotation);
+    }
 }
+/*
+ Boss ideas
+
+- chrono tbd floating chrono with chrono shields around it circling that come off 
+  and fall from ceiling to ground, shields have health but main body  
+  health must be 0 to defeat.
+    - RotateAround()
+    - Vector3.back or Vector3.forward
+    - Vector3 point = new Vector3(5,0,0);
+    - Vector3 axis = new Vector3(0,0,1);
+    - transform.RotateAround(point, axis, Time.deltaTime * 10);
+- Pead Buggy big with drill 
+- spikey lead ball that charges and is invulnerable when balled up and charging
+- sead kracken 
+ 
+ 
+ 
+ 
+ 
+ */

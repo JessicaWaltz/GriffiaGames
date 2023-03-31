@@ -25,7 +25,7 @@ public class beedCopter : MonoBehaviour
     public float decendAmount = 50;
     public float shootInterval = 3f;
 
-    public float health = 2;
+    public float health = 3;
 
     private float coolDownTimer = 1f;
     private bool coolDownComplete = true;

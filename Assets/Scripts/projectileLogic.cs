@@ -14,6 +14,8 @@ public class projectileLogic : MonoBehaviour
 
     private Rigidbody2D rb;
     public bool isEnemyProjectile = false;
+    public bool shouldRotate = true;
+    public bool shouldDesroy = false;
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -30,13 +32,17 @@ public class projectileLogic : MonoBehaviour
                 Physics2D.IgnoreCollision(AllEnemies[i].GetComponent<Collider2D>(), GetComponent<Collider2D>());
             }
         }
+        if (shouldDesroy) {
+            Invoke("DestroyMe", 7f);
+        }
         
     }
-
+    void DestroyMe() { Destroy(gameObject); }
     // Update is called once per frame
     void Update()
     {
-        rb.rotation = rb.rotation - 10;
+        if (shouldRotate) { rb.rotation = rb.rotation - 10; }
+        
     }
     private void OnCollisionEnter2D(Collision2D collision) {
         if (collision.gameObject.tag != "endScroll")
