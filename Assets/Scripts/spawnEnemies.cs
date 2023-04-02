@@ -58,14 +58,14 @@ public class spawnEnemies : MonoBehaviour
                 {
                     StartCoroutine(SpawnSead(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], speed[i], goingPositiveDirection[i]));
                 }
-                //else if (spawnWho[i].GetComponent<Leed>() != null)
-                //{
-
-                //}
-                //else if (spawnWho[i].GetComponent<Need>() != null)
-                //{
-
-                //}
+                else if (spawnWho[i].GetComponent<LeedSpikeBotBehavior>() != null)
+                {
+                    StartCoroutine(SpawnLeed(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], shootInterval[i], goingPositiveDirection[i]));
+                }
+                else if (spawnWho[i].GetComponent<NeedHopperController>() != null)
+                {
+                    StartCoroutine(SpawnNeed(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], goingPositiveDirection[i]));
+                }
             }
         }
     }
@@ -113,6 +113,34 @@ public class spawnEnemies : MonoBehaviour
         spawning.GetComponent<SeadSurfer>().speed = speed;
         spawning.GetComponent<SeadSurfer>().lineOfSiteRangeX = range;
         spawning.GetComponent<SeadSurfer>().facingLeft = !goingRight;
+
+        Instantiate(spawning, position, rotation);
+    }
+    IEnumerator SpawnLeed(GameObject spawning, float locationX, float locationY, float delayTime, float health, float range, float shootInterval, bool goingRight)
+    {
+        yield return new WaitForSeconds(delayTime);
+
+        Vector3 position = new Vector3(locationX, locationY, 0);
+        Quaternion rotation = new Quaternion();
+
+        spawning.GetComponent<LeedSpikeBotBehavior>().health = health;
+        spawning.GetComponent<LeedSpikeBotBehavior>().shootInterval = shootInterval;
+        spawning.GetComponent<LeedSpikeBotBehavior>().playerRange = range;
+        spawning.GetComponent<LeedSpikeBotBehavior>().facingLeft = !goingRight;
+
+        Instantiate(spawning, position, rotation);
+    }
+
+    IEnumerator SpawnNeed(GameObject spawning, float locationX, float locationY, float delayTime, float health, float playerRange, bool goingRight)
+    {
+        yield return new WaitForSeconds(delayTime);
+
+        Vector3 position = new Vector3(locationX, locationY, 0);
+        Quaternion rotation = new Quaternion();
+
+        spawning.GetComponent<NeedHopperController>().health = health;
+        spawning.GetComponent<NeedHopperController>().playerRange = playerRange;
+        spawning.GetComponent<NeedHopperController>().facingLeft = !goingRight;
 
         Instantiate(spawning, position, rotation);
     }

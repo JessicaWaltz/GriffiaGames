@@ -16,7 +16,7 @@ public class NeedHopperController : MonoBehaviour
     private bool isPlayerInRange = false;
     private bool isJumping = true;
     private bool coolDownIsOver = true;
-    private bool facingLeft = false;
+    public bool facingLeft = false;
 
     private Animator anim;
     private AnimatorClipInfo[] m_CurrentClipInfo;
@@ -43,10 +43,8 @@ public class NeedHopperController : MonoBehaviour
         if (!isJumping && !isPlayerInRange)
         {
             int direction = Random.Range(0, 2) == 0 ? -1 : 1; // choose a random direction
-            if ((direction > 0 && !facingLeft) ||(direction < 0 && facingLeft)) {//going right
-                Flip();
-            }
             Vector2 hopVector = new Vector2(direction * hopRange, hopForce); // create the hop vector
+            if ((direction > 0 && !facingLeft) ||(direction < 0 && facingLeft)) { Flip(); }
             rb.AddForce(hopVector, ForceMode2D.Impulse); // apply the hop force
             isJumping = true;
         }
@@ -60,29 +58,19 @@ public class NeedHopperController : MonoBehaviour
     {
         // check if the player is in range
         anim.SetBool("onGround", !isJumping);
-        if (Vector2.Distance(transform.position, playerTransform.position) < playerRange)
-        {
-            isPlayerInRange = true;
-        }
-        else
-        {
-            isPlayerInRange = false;
-        }
-
+        if (Vector2.Distance(transform.position, playerTransform.position) < playerRange) { isPlayerInRange = true; }
+        else { isPlayerInRange = false; }
+            
         // if the player is in range, jump towards them
         if (isPlayerInRange && !isJumping && coolDownIsOver)
         {
-            //Vector2 playerDirection = ((playerTransform.position - transform.position).normalized);
-
             // calculate the hop force vector with increased y value for higher jump
-            int direction = playerTransform.position.x > transform.position.x ? 1 : -1; // choose a random direction
-            if ((direction > 0 && !facingLeft) || (direction < 0 && facingLeft))
-            {//going right
-                Flip();
-            }
+            int direction = playerTransform.position.x > transform.position.x ? 1 : -1; 
             float distanceToPlayer = Mathf.Abs(playerTransform.position.x - transform.position.x);
-            Vector2 hopVector = new Vector2(direction * distanceToPlayer, playerHopForce); // create the hop vector
-            //Vector2 hopVector = (playerDirection) * hopForce * 1.5f + Vector2.up * playerHopForce;
+            Vector2 hopVector = new Vector2(direction * distanceToPlayer, playerHopForce);
+
+            if ((direction > 0 && !facingLeft) || (direction < 0 && facingLeft)) { Flip(); }
+
             rb.AddForce(hopVector, ForceMode2D.Impulse);
             isJumping = true;
             coolDownIsOver = false;

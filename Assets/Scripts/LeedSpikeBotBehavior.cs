@@ -10,10 +10,10 @@ public class LeedSpikeBotBehavior : MonoBehaviour
     private bool isPlayerInRange = false;
     private float currentState = 1;
 
-    public float playerRange = 150f; // how far the enemy can detect the player
+    public float playerRange = 250f; // how far the enemy can detect the player
     public GameObject projectileObject;
     public GameObject poof;
-    private bool facingLeft = true;
+    public bool facingLeft = true;
     public float shootInterval = 1f;
 
     public float health = 3;

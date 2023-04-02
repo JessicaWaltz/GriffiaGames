@@ -27,6 +27,7 @@ public class PeadBuggy : MonoBehaviour
         //anim = gameObject.GetComponent<Animator>();
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         player = GameObject.FindGameObjectWithTag("Player");
+        if (!facingLeft) { Flip(); }
     }
 
     // Update is called once per frame
@@ -107,13 +108,13 @@ public class PeadBuggy : MonoBehaviour
     }
     private void Move()
     {
-        if (facingLeft) { GetComponent<Rigidbody2D>().velocity = new Vector2(-speed, 0); }
-        else if (!facingLeft) { GetComponent<Rigidbody2D>().velocity = new Vector2(speed, 0); }
+        if (facingLeft) { GetComponent<Rigidbody2D>().velocity = new Vector2(-speed, GetComponent<Rigidbody2D>().velocity.y); }
+        else if (!facingLeft) { GetComponent<Rigidbody2D>().velocity = new Vector2(speed, GetComponent<Rigidbody2D>().velocity.y); }
     }
     private void MoveFast()
     {
-        if (facingLeft) { GetComponent<Rigidbody2D>().velocity = new Vector2(-speed * 3, 0); }
-        else if (!facingLeft) { GetComponent<Rigidbody2D>().velocity = new Vector2(speed *3, 0); }
+        if (facingLeft) { GetComponent<Rigidbody2D>().velocity = new Vector2(-speed * 3, GetComponent<Rigidbody2D>().velocity.y); }
+        else if (!facingLeft) { GetComponent<Rigidbody2D>().velocity = new Vector2(speed *3, GetComponent<Rigidbody2D>().velocity.y); }
     }
     bool SeePlayer() {
         float distanceFromPlayer = player.transform.position.x - transform.position.x;
