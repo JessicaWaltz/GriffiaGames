@@ -22,6 +22,8 @@ TagManager:
   - projectile
   - trigger
   - endScroll
+  - waterGround
+  - Turn
   layers:
   - Default
   - TransparentFX

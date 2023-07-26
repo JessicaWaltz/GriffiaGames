@@ -14,7 +14,7 @@ public class spawnEnemies : MonoBehaviour
     //bead points
     public float[] range;
     public float[] speed;
-    public bool[] goingUp;
+    public bool[] goingPositiveDirection;
     public bool[] decendComplete;
     public float[] decendAmount;
     public float[] shootInterval;
@@ -48,16 +48,42 @@ public class spawnEnemies : MonoBehaviour
             {
                 if (spawnWho[i].GetComponent<beedCopter>() != null)
                 {
-                    StartCoroutine(SpawnBeed(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], speed[i], goingUp[i], decendComplete[i], decendAmount[i], shootInterval[i]));
+                    StartCoroutine(SpawnBeed(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], speed[i], goingPositiveDirection[i], decendComplete[i], decendAmount[i], shootInterval[i]));
                 }
-                //else if (pead) { }
-                //else if (sead) { }
-                //else if (leed) { }
-                //else if (need) { }
+                else if (spawnWho[i].GetComponent<PeadBuggy>() != null)
+                {
+                    StartCoroutine(SpawnPead(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], speed[i], goingPositiveDirection[i]));
+                }
+                else if (spawnWho[i].GetComponent<SeadSurfer>() != null)
+                {
+                    StartCoroutine(SpawnSead(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], speed[i], goingPositiveDirection[i]));
+                }
+                else if (spawnWho[i].GetComponent<LeedSpikeBotBehavior>() != null)
+                {
+                    StartCoroutine(SpawnLeed(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], shootInterval[i], goingPositiveDirection[i]));
+                }
+                else if (spawnWho[i].GetComponent<NeedHopperController>() != null)
+                {
+                    StartCoroutine(SpawnNeed(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], goingPositiveDirection[i]));
+                }
             }
         }
     }
+    IEnumerator SpawnPead(GameObject spawning, float locationX, float locationY, float delayTime, float health, float range, float speed, bool goingRight) 
+    {
+        yield return new WaitForSeconds(delayTime);
 
+        Vector3 position = new Vector3(locationX, locationY, 0);
+        Quaternion rotation = new Quaternion();
+
+        spawning.GetComponent<PeadBuggy>().health = health;
+        spawning.GetComponent<PeadBuggy>().speed = speed;
+        spawning.GetComponent<PeadBuggy>().lineOfSiteRangeX = range;
+        spawning.GetComponent<PeadBuggy>().facingLeft = !goingRight;
+
+        Instantiate(spawning, position, rotation);
+
+    }
     IEnumerator SpawnBeed(GameObject spawning, float locationX, float locationY,
         float delayTime, float health, float range, float speed, bool goingUp, bool decendComplete,
         float decendAmount, float shootInterval)
@@ -77,4 +103,65 @@ public class spawnEnemies : MonoBehaviour
 
         Instantiate(spawning, position, rotation);
     }
+    IEnumerator SpawnSead(GameObject spawning, float locationX, float locationY, float delayTime, float health, float range, float speed, bool goingRight) {
+        yield return new WaitForSeconds(delayTime);
+
+        Vector3 position = new Vector3(locationX, locationY, 0);
+        Quaternion rotation = new Quaternion();
+
+        spawning.GetComponent<SeadSurfer>().health = health;
+        spawning.GetComponent<SeadSurfer>().speed = speed;
+        spawning.GetComponent<SeadSurfer>().lineOfSiteRangeX = range;
+        spawning.GetComponent<SeadSurfer>().facingLeft = !goingRight;
+
+        Instantiate(spawning, position, rotation);
+    }
+    IEnumerator SpawnLeed(GameObject spawning, float locationX, float locationY, float delayTime, float health, float range, float shootInterval, bool goingRight)
+    {
+        yield return new WaitForSeconds(delayTime);
+
+        Vector3 position = new Vector3(locationX, locationY, 0);
+        Quaternion rotation = new Quaternion();
+
+        spawning.GetComponent<LeedSpikeBotBehavior>().health = health;
+        spawning.GetComponent<LeedSpikeBotBehavior>().shootInterval = shootInterval;
+        spawning.GetComponent<LeedSpikeBotBehavior>().playerRange = range;
+        spawning.GetComponent<LeedSpikeBotBehavior>().facingLeft = !goingRight;
+
+        Instantiate(spawning, position, rotation);
+    }
+
+    IEnumerator SpawnNeed(GameObject spawning, float locationX, float locationY, float delayTime, float health, float playerRange, bool goingRight)
+    {
+        yield return new WaitForSeconds(delayTime);
+
+        Vector3 position = new Vector3(locationX, locationY, 0);
+        Quaternion rotation = new Quaternion();
+
+        spawning.GetComponent<NeedHopperController>().health = health;
+        spawning.GetComponent<NeedHopperController>().playerRange = playerRange;
+        spawning.GetComponent<NeedHopperController>().facingLeft = !goingRight;
+
+        Instantiate(spawning, position, rotation);
+    }
 }
+/*
+ Boss ideas
+
+- chrono tbd floating chrono with chrono shields around it circling that come off 
+  and fall from ceiling to ground, shields have health but main body  
+  health must be 0 to defeat.
+    - RotateAround()
+    - Vector3.back or Vector3.forward
+    - Vector3 point = new Vector3(5,0,0);
+    - Vector3 axis = new Vector3(0,0,1);
+    - transform.RotateAround(point, axis, Time.deltaTime * 10);
+- Pead Buggy big with drill 
+- spikey lead ball that charges and is invulnerable when balled up and charging
+- sead kracken 
+ 
+ 
+ 
+ 
+ 
+ */
