@@ -33,6 +33,7 @@ public class projectileLogic : MonoBehaviour
             {
                 Physics2D.IgnoreCollision(AllEnemies[i].GetComponent<Collider2D>(), GetComponent<Collider2D>());
             }
+            
         }
         if (shouldDesroy) 
         {
@@ -44,6 +45,11 @@ public class projectileLogic : MonoBehaviour
 
     void Update()
     {
+        GameObject[] ignoreMe = GameObject.FindGameObjectsWithTag("projectile");
+        for (int i = 0; ignoreMe.Length > i; i++)
+        {
+            Physics2D.IgnoreCollision(ignoreMe[i].GetComponent<Collider2D>(), GetComponent<Collider2D>());
+        }
         if (shouldRotate) { rb.rotation = rb.rotation - 10; }
         if (typeOfShot == "wave") 
         {
