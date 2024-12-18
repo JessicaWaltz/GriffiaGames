@@ -4,32 +4,59 @@ using UnityEngine;
 
 public class PlayerDamageController : MonoBehaviour
 {
+    damageFlash damageFlashObject;
+    PlayerMovementController playerMovementController;
+    public HealthController healthContoller;
+    private HealthController healthCounter;
     // Start is called before the first frame update
     void Start()
     {
-        
+        damageFlashObject = gameObject.GetComponent<damageFlash>();
+        playerMovementController = gameObject.GetComponent<PlayerMovementController>();
+        healthCounter = FindObjectOfType<HealthController>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (damageFlashObject.checkInvulnerability() == true) { 
         
+        }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Enemy")
+        if (collision.gameObject.tag == "projectile" && collision.gameObject.layer == LayerMask.NameToLayer("Enemy") && !healthCounter.IsDead())
         {
-            //AudioPlayerSoft(hit);
-            Debug.Log("IVE BEEN HIT!!");//takeDamage = true;
-            //isSpecialJump = true;
-            //xLocationEnemy = collision.gameObject.GetComponent<Rigidbody2D>().transform.position.x;
-            //xLocationPlayer = transform.position.x;
+            healthContoller.TakeDamage();
+            damageFlashObject.StartDamageAnimation(2f);
+            int direction = 1;
+            if (collision.gameObject.GetComponent<Rigidbody2D>().position.x > gameObject.GetComponent<Rigidbody2D>().position.x)
+            {
+                direction = direction * -1;
+            }
+            playerMovementController.BounceBack(direction);
+
         }
-        else if (collision.gameObject.tag == "projectile" && collision.gameObject.name.Contains("Bullet"))
-        {
-            Debug.Log("IVE BEEN HIT!!");
+        else {
+            Debug.Log("collision with " + collision.gameObject.tag);
         }
 
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy" && !healthCounter.IsDead())
+        {
+
+            healthContoller.TakeDamage();
+            damageFlashObject.StartDamageAnimation(2f);
+            int direction = 1;
+            if (collision.gameObject.GetComponent<Rigidbody2D>().position.x > gameObject.GetComponent<Rigidbody2D>().position.x)
+            {
+                direction = direction * -1;
+            }
+            playerMovementController.BounceBack(direction);
+
+        }
     }
 }
 

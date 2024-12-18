@@ -70,7 +70,7 @@ public class projectileLogic : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag != "trigger" && collision.gameObject.tag != "endScroll")
+        if (collision.gameObject.tag != "trigger" && collision.gameObject.tag != "endScroll" )
         {
             Instantiate(starPoof, transform.position, transform.rotation);
             Destroy(gameObject);

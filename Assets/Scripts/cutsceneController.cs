@@ -82,7 +82,7 @@ public class cutsceneController : MonoBehaviour
                 counter = 0;
             }
         }
-        else if (part == 2)
+        else if (part == 2) // change this part with bad guy to spawn, fall to ground(shake camera), kidnap zog, hop away(shake camera less twice)   
         {
             //spawn badguy to kidnap zog
             float height = 2f * Camera.main.orthographicSize;

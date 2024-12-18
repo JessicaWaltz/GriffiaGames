@@ -7,6 +7,7 @@ public class LeedSpikeBotBehavior : MonoBehaviour
     private Rigidbody2D rb;
     private Transform playerTransform;
     private SpriteRenderer spriteRenderer;
+    public Animator anim;
     private bool isPlayerInRange = false;
     private float currentState = 1;
 
@@ -21,15 +22,17 @@ public class LeedSpikeBotBehavior : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = gameObject.GetComponent<Animator>();
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         spriteRenderer = GetComponent<SpriteRenderer>();
-    }
+        currentState = 1;
+}
 
     // Update is called once per frame
     void Update()
     {
         isPlayerInRange = Vector2.Distance(transform.position, playerTransform.position) < playerRange ? true : false;
-
+        anim.SetInteger("currentState", (int)currentState);
         if (isPlayerInRange && currentState == 1)//notice player
         {
             currentState = 2;
@@ -44,6 +47,7 @@ public class LeedSpikeBotBehavior : MonoBehaviour
         else if (currentState == 5) {
             currentState = isPlayerInRange ? 3 : 1;
         }
+        
     }
     void TimerToThree() {
         currentState = 3;

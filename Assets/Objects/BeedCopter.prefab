@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8000703178176498202}
   - component: {fileID: 8000703178176498234}
   - component: {fileID: 1773968023190608889}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: BeedCopter
   m_TagString: Enemy
   m_Icon: {fileID: 0}

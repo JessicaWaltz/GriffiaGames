@@ -9,6 +9,8 @@ public class NeedHopperController : MonoBehaviour
     public float hopRange = 30f; // how far the enemy hops
     public float playerRange = 150f; // how far the enemy can detect the player
     public float playerHopForce = 100f; // how hard the enemy hops towards the player
+    private float savedXVelocity;
+
 
     private Rigidbody2D rb;
     private Transform playerTransform;
@@ -21,12 +23,14 @@ public class NeedHopperController : MonoBehaviour
     private Animator anim;
     private AnimatorClipInfo[] m_CurrentClipInfo;
 
+
     public float health = 3;
 
     void Start()
     {
         anim = gameObject.GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        rb.bodyType = RigidbodyType2D.Dynamic;
         playerTransform = GameObject.FindGameObjectWithTag("Player").transform;
         InvokeRepeating("HopRandomly", 0f, hopInterval);
     }
@@ -64,6 +68,7 @@ public class NeedHopperController : MonoBehaviour
         // if the player is in range, jump towards them
         if (isPlayerInRange && !isJumping && coolDownIsOver)
         {
+            
             // calculate the hop force vector with increased y value for higher jump
             int direction = playerTransform.position.x > transform.position.x ? 1 : -1; 
             float distanceToPlayer = Mathf.Abs(playerTransform.position.x - transform.position.x);
@@ -72,9 +77,19 @@ public class NeedHopperController : MonoBehaviour
             if ((direction > 0 && !facingLeft) || (direction < 0 && facingLeft)) { Flip(); }
 
             rb.AddForce(hopVector, ForceMode2D.Impulse);
+            savedXVelocity = rb.velocity.x;
             isJumping = true;
             coolDownIsOver = false;
-            Invoke("HopCoolDown", 1f);
+            Invoke("HopCoolDown", 1.75f);
+        }
+        if (isJumping)
+        {
+            Vector2 newVelocity = rb.velocity;
+            newVelocity.x = savedXVelocity;
+            rb.velocity = newVelocity;
+        }
+        if (isPlayerInRange && isJumping && rb.velocity.x < 0) {
+            SetSortingLayerForGameObject("Default");
         }
     }
 
@@ -95,6 +110,31 @@ public class NeedHopperController : MonoBehaviour
                 Instantiate(poof, transform.position, transform.rotation);
                 Destroy(gameObject);
             }
+        }
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            Physics2D.IgnoreCollision(collision.collider, GetComponent<Collider2D>());
+        }
+
+    }
+
+    void SetSortingLayerForGameObject(string layer)
+    {
+        // Get the Renderer component of the GameObject
+        Renderer renderer = gameObject.GetComponent<Renderer>();
+
+        // Check if the Renderer component is not null
+        if (renderer != null)
+        {
+            // Set the sorting layer name
+            renderer.sortingLayerName = layer;
+
+            // Optionally, you can also set the sorting order if needed
+            // renderer.sortingOrder = 0;
+        }
+        else
+        {
+            Debug.LogWarning("Renderer component not found on " + gameObject.name);
         }
     }
 }

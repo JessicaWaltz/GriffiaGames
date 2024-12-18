@@ -29,6 +29,9 @@ public class CameraFollow : MonoBehaviour
     public bool sceneEnd = true;
 
     public bool inEndArea = false;
+
+    public bool yIsLocked = false;
+    public float yIsLockedAt = 0;
     //private float inEndAreaCount = 0f;
     void Start()
     {
@@ -109,11 +112,18 @@ public class CameraFollow : MonoBehaviour
         // if players PlayerMovementController has public bool isGround = true; then transform to player.transform.position.y + yOffset + counter
         // else keep current y position
         bool isPlayerOnGround = player.GetComponent<PlayerMovementController>().isGround;
-        float newYPosition = transform.position.y;
-        if (isPlayerOnGround || player.transform.position.y + yOffset + counter <= transform.position.y)
+        float newYPosition = transform.position.y;//dont move y unless
+        if (yIsLocked) {
+            newYPosition = Mathf.Lerp(transform.position.y, yIsLockedAt + yOffset + counter, 0.5f);
+        }
+        else if (isPlayerOnGround && player.GetComponent<Rigidbody2D>().velocity.y < 40)
         {
-            newYPosition = Mathf.Lerp(transform.position.y, player.transform.position.y + yOffset + counter, 0.1f);
-        } 
+            newYPosition = Mathf.Lerp(transform.position.y, player.transform.position.y + yOffset + counter, 0.05f);
+        }
+        else if (player.transform.position.y + yOffset + counter <= transform.position.y)
+        {
+            newYPosition = Mathf.Lerp(transform.position.y, player.transform.position.y + yOffset + counter, 0.5f);
+        }
         transform.position = new Vector3(player.transform.position.x, newYPosition, -10);
     }
     void StartingCutscene() {

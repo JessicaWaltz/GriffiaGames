@@ -18,6 +18,8 @@ public class spawnEnemies : MonoBehaviour
     public bool[] decendComplete;
     public float[] decendAmount;
     public float[] shootInterval;
+    public bool[] shouldSetSortingLayer;
+    public string[] sortingLayerName;
 
     public bool isTriggered = false;
 
@@ -56,7 +58,7 @@ public class spawnEnemies : MonoBehaviour
                 }
                 else if (spawnWho[i].GetComponent<SeadSurfer>() != null)
                 {
-                    StartCoroutine(SpawnSead(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], speed[i], goingPositiveDirection[i]));
+                    StartCoroutine(SpawnSead(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], speed[i], goingPositiveDirection[i], shouldSetSortingLayer[i], sortingLayerName[i]));
                 }
                 else if (spawnWho[i].GetComponent<LeedSpikeBotBehavior>() != null)
                 {
@@ -64,7 +66,7 @@ public class spawnEnemies : MonoBehaviour
                 }
                 else if (spawnWho[i].GetComponent<NeedHopperController>() != null)
                 {
-                    StartCoroutine(SpawnNeed(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], goingPositiveDirection[i]));
+                    StartCoroutine(SpawnNeed(spawnWho[i], spawnWhereX[i], spawnWhereY[i], spawnDelay[i], health[i], range[i], goingPositiveDirection[i], shouldSetSortingLayer[i], sortingLayerName[i]));
                 }
             }
         }
@@ -103,7 +105,7 @@ public class spawnEnemies : MonoBehaviour
 
         Instantiate(spawning, position, rotation);
     }
-    IEnumerator SpawnSead(GameObject spawning, float locationX, float locationY, float delayTime, float health, float range, float speed, bool goingRight) {
+    IEnumerator SpawnSead(GameObject spawning, float locationX, float locationY, float delayTime, float health, float range, float speed, bool goingRight, bool setSorting,string layer) {
         yield return new WaitForSeconds(delayTime);
 
         Vector3 position = new Vector3(locationX, locationY, 0);
@@ -114,6 +116,9 @@ public class spawnEnemies : MonoBehaviour
         spawning.GetComponent<SeadSurfer>().lineOfSiteRangeX = range;
         spawning.GetComponent<SeadSurfer>().facingLeft = !goingRight;
 
+        if (setSorting) {
+            SetSortingLayerForGameObject(spawning, layer);
+        }
         Instantiate(spawning, position, rotation);
     }
     IEnumerator SpawnLeed(GameObject spawning, float locationX, float locationY, float delayTime, float health, float range, float shootInterval, bool goingRight)
@@ -131,7 +136,7 @@ public class spawnEnemies : MonoBehaviour
         Instantiate(spawning, position, rotation);
     }
 
-    IEnumerator SpawnNeed(GameObject spawning, float locationX, float locationY, float delayTime, float health, float playerRange, bool goingRight)
+    IEnumerator SpawnNeed(GameObject spawning, float locationX, float locationY, float delayTime, float health, float playerRange, bool goingRight, bool setSorting, string layer)
     {
         yield return new WaitForSeconds(delayTime);
 
@@ -141,8 +146,41 @@ public class spawnEnemies : MonoBehaviour
         spawning.GetComponent<NeedHopperController>().health = health;
         spawning.GetComponent<NeedHopperController>().playerRange = playerRange;
         spawning.GetComponent<NeedHopperController>().facingLeft = !goingRight;
+        if (setSorting)
+        {
+            SetSortingLayerForGameObject(spawning, layer);
+        }
 
         Instantiate(spawning, position, rotation);
+    }
+
+    public void ResetSpawner()
+    {
+        isTriggered = false;
+    }
+    public Vector2 SpawnerLocation()
+    {
+        return transform.position;
+    }
+
+    void SetSortingLayerForGameObject(GameObject theGameObject, string layer)
+    {
+        // Get the Renderer component of the GameObject
+        Renderer renderer = theGameObject.GetComponent<Renderer>();
+
+        // Check if the Renderer component is not null
+        if (renderer != null)
+        {
+            // Set the sorting layer name
+            renderer.sortingLayerName = layer;
+
+            // Optionally, you can also set the sorting order if needed
+            // renderer.sortingOrder = 0;
+        }
+        else
+        {
+            Debug.LogWarning("Renderer component not found on " + theGameObject.name);
+        }
     }
 }
 /*

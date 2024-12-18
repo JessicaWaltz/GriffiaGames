@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 9098041864873063517}
   - component: {fileID: 9098041864873063518}
   - component: {fileID: -5786957435824797660}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: PeadBuggy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -180,12 +180,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75ffb0c13ff553b4eac8a515e398805b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 3
   anim: {fileID: 0}
-  facingLeft: 1
+  facingLeft: 0
   speed: 50
   lineOfSiteRangeY: 0
-  lineOfSiteRangeX: 150
+  lineOfSiteRangeX: 120
   currentState: 1
   isMoving: 0
   poof: {fileID: 5938100641515439996, guid: bd1651c8e7e28014283506e41892c22d, type: 3}
@@ -199,8 +199,8 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_audioClip: {fileID: 8300000, guid: 635d0120ef4c984419b15328af33cd32, type: 3}
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

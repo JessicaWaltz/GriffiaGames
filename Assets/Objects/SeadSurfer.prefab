@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 1548753600933113502}
   - component: {fileID: 4939431956846088932}
   - component: {fileID: 6135942901753062303}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: SeadSurfer
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -74,8 +74,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: -1358547065
+  m_SortingLayer: -2
   m_SortingOrder: -1
   m_Sprite: {fileID: -4302413806713842220, guid: ef9c110578d5af84c8209c7ad996312a,
     type: 3}

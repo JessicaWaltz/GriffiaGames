@@ -15,9 +15,9 @@ GameObject:
   - component: {fileID: 5826418216651613668}
   - component: {fileID: 5826418216651613671}
   - component: {fileID: 5826418216651613669}
-  m_Layer: 0
+  m_Layer: 14
   m_Name: NeedHopper
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -72,9 +72,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1358547065
+  m_SortingLayer: -2
+  m_SortingOrder: -1
   m_Sprite: {fileID: -8161017311990399486, guid: ef9c110578d5af84c8209c7ad996312a,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -162,6 +162,7 @@ MonoBehaviour:
   playerRange: 150
   playerHopForce: 700
   poof: {fileID: 5938100641515439996, guid: bd1651c8e7e28014283506e41892c22d, type: 3}
+  facingLeft: 0
   health: 3
 --- !u!95 &5826418216651613671
 Animator:

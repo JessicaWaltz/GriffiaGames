@@ -136,10 +136,23 @@ public class PeadBuggy : MonoBehaviour
         transform.localScale = theScale;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision) {
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
         if (collision.gameObject.tag == "Ground")
         {
-            isOnGround = true;
+            EdgeCollider2D[] edgeColliders = collision.gameObject.GetComponents<EdgeCollider2D>();
+
+            foreach (EdgeCollider2D edgeCollider in edgeColliders)
+            {
+                if (collision.gameObject.layer == 15)// 15 is Ignore enemy layer
+                {
+                    Physics2D.IgnoreCollision(edgeCollider, GetComponent<Collider2D>());
+                }
+                else
+                {
+                    isOnGround = true;
+                }
+            }
         }
         else if (collision.gameObject.tag == "projectile")
         {

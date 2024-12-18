@@ -26,7 +26,7 @@ public class SeadSurfer : MonoBehaviour
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         player = GameObject.FindGameObjectWithTag("Player");
 
-        IgnoreThisCollision("Player");
+        //IgnoreThisCollision("Player");
         IgnoreThisCollision("Enemy");
         IgnoreThisCollision("Ground");
         
@@ -70,7 +70,7 @@ public class SeadSurfer : MonoBehaviour
             Invoke("TimerToThree", 0.5f);
             currentState = 0;
         }
-        else if (currentState == 3) //If the player is within 15 units move to state 4
+        else if (currentState == 3 ) //If the player is within 15 units move to state 4 
         {
             if (SeePlayer(15)) {currentState = 4;}
             else {
