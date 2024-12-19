@@ -8,11 +8,25 @@ public class TwoWayPlatformEdge : MonoBehaviour
     private bool isTouching = false;
     private Collider2D[] m_ObjectCollider;
     private bool[] wasTrigger;
-
+    public bool ignoreEnemy = false;
     void Start()
     {
         m_ObjectCollider = gameObject.GetComponents<EdgeCollider2D>();
-        
+        if (ignoreEnemy == true) {
+            //Debug.LogWarning("We wish to ignore");
+            int enemyLayer = LayerMask.NameToLayer("Enemy");
+
+            // Disable collision between this GameObject's layer and the "Enemy" layer
+            Physics2D.IgnoreLayerCollision(gameObject.layer, enemyLayer, true);
+
+            // Ignore collisions with GameObjects that have the "enemy" tag
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+            foreach (GameObject enemy in enemies)
+            {
+                Physics2D.IgnoreCollision(GetComponent<Collider2D>(), enemy.GetComponent<Collider2D>(), true);
+                //Debug.LogWarning("Ignoring Something");
+            }
+        }
     }
 
     // Update is called once per frame

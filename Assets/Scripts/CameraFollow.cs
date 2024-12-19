@@ -10,7 +10,7 @@ public class CameraFollow : MonoBehaviour
     private float counter = 0f;
     private float spritebuffer = 12;
 
-    public Transform player;
+    public GameObject player;
     public float panSpeed = 0.5f;
     public float yOffset = 20f;
 
@@ -29,6 +29,9 @@ public class CameraFollow : MonoBehaviour
     public bool sceneEnd = true;
 
     public bool inEndArea = false;
+
+    public bool yIsLocked = false;
+    public float yIsLockedAt = 0;
     //private float inEndAreaCount = 0f;
     void Start()
     {
@@ -48,9 +51,9 @@ public class CameraFollow : MonoBehaviour
                 //stop camera and put boundries 
                 wasBattle = true;
                 Vector3 cameraPos = transform.position;
-                Vector3 playerPos = new Vector3(player.position.x, player.position.y, transform.position.z);
-                float playerLeftx = player.position.x - spritebuffer;
-                float playerRightx = player.position.x + spritebuffer;
+                Vector3 playerPos = new Vector3(player.transform.position.x, player.transform.position.y, transform.position.z);
+                float playerLeftx = player.transform.position.x - spritebuffer;
+                float playerRightx = player.transform.position.x + spritebuffer;
                 Camera cam = Camera.main;
                 float height = 2f * cam.orthographicSize;
                 float width = height * cam.aspect;
@@ -61,13 +64,13 @@ public class CameraFollow : MonoBehaviour
                     //transform.position.x = screenPos;
                     //Debug.Log("too far left, move me back");
 
-                    player.position = new Vector3(cameraLeftx + spritebuffer, player.position.y, player.position.z);
+                    player.transform.position = new Vector3(cameraLeftx + spritebuffer, player.transform.position.y, player.transform.position.z);
                 }
                 else if (playerRightx > cameraRightx) //we are to the left of the screen
                 {
                     //transform.position.x = Screen.width;
                     //Debug.Log("too far right, move me back");
-                    player.position = new Vector3(cameraRightx - spritebuffer, player.position.y, player.position.z);
+                    player.transform.position = new Vector3(cameraRightx - spritebuffer, player.transform.position.y, player.transform.position.z);
                 }
 
             }
@@ -81,7 +84,7 @@ public class CameraFollow : MonoBehaviour
            FollowPlayer();
         }
         myLocation = transform.position;
-        yourLocation = new Vector3(player.position.x, player.position.y + yOffset, transform.position.z);
+        yourLocation = new Vector3(player.transform.position.x, player.transform.position.y + yOffset, transform.position.z);
     }
     void FollowPlayer() {
         if (counter < 0)
@@ -106,7 +109,22 @@ public class CameraFollow : MonoBehaviour
                 counter = counter - panSpeed * Time.deltaTime;
             }
         }
-        transform.position = new Vector3(player.position.x, player.position.y + yOffset + counter, -10);
+        // if players PlayerMovementController has public bool isGround = true; then transform to player.transform.position.y + yOffset + counter
+        // else keep current y position
+        bool isPlayerOnGround = player.GetComponent<PlayerMovementController>().isGround;
+        float newYPosition = transform.position.y;//dont move y unless
+        if (yIsLocked) {
+            newYPosition = Mathf.Lerp(transform.position.y, yIsLockedAt + yOffset + counter, 0.5f);
+        }
+        else if (isPlayerOnGround && player.GetComponent<Rigidbody2D>().velocity.y < 40)
+        {
+            newYPosition = Mathf.Lerp(transform.position.y, player.transform.position.y + yOffset + counter, 0.05f);
+        }
+        else if (player.transform.position.y + yOffset + counter <= transform.position.y)
+        {
+            newYPosition = Mathf.Lerp(transform.position.y, player.transform.position.y + yOffset + counter, 0.5f);
+        }
+        transform.position = new Vector3(player.transform.position.x, newYPosition, -10);
     }
     void StartingCutscene() {
         //part 1 pan down to scene 
@@ -158,7 +176,7 @@ public class CameraFollow : MonoBehaviour
         {
             //move to player
             Vector3 lastPosition = transform.position;
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(player.position.x, player.position.y + yOffset, transform.position.z), Time.deltaTime * panSpeed);
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(player.transform.position.x, player.transform.position.y + yOffset, transform.position.z), Time.deltaTime * panSpeed);
             if (lastPosition == transform.position)
             {
                 infobar.SetActive(true);
@@ -173,7 +191,7 @@ public class CameraFollow : MonoBehaviour
     }
     void PlayerTransition() {
         Vector3 lastPosition = transform.position;
-        transform.position = Vector3.MoveTowards(transform.position, new Vector3(player.position.x, player.position.y + yOffset, transform.position.z), Time.deltaTime * panSpeed);
+        transform.position = Vector3.MoveTowards(transform.position, new Vector3(player.transform.position.x, player.transform.position.y + yOffset, transform.position.z), Time.deltaTime * panSpeed);
         if (lastPosition == transform.position)
         {
             wasBattle = false;

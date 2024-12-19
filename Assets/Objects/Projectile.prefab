@@ -123,7 +123,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 5
+  m_Mass: 0.1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 50
@@ -148,6 +148,12 @@ MonoBehaviour:
   velocityY: 75
   starPoof: {fileID: 1613120640196185447, guid: bf63dab9d67d6564b97f26c5343d8e97,
     type: 3}
+  AllEnds: []
+  AllEnemies: []
+  isEnemyProjectile: 0
+  shouldRotate: 1
+  shouldDesroy: 0
+  typeOfShot: 
 --- !u!82 &-7502164603807650372
 AudioSource:
   m_ObjectHideFlags: 0

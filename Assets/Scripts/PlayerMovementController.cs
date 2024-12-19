@@ -12,6 +12,8 @@ public class PlayerMovementController : MonoBehaviour
     public float allGroundCollisions = 0;
     private float JumpPower;
 
+    public bool isDamageFall = false;
+
     
     //m_CurrentClipInfo = anim.GetCurrentAnimatorClipInfo(0);
     public string Walk(bool isLeft, bool isRight, bool isUp, bool isDown, Rigidbody2D rb, float movementSpeed, string facing, AnimatorClipInfo[] m_CurrentClipInfo)
@@ -111,6 +113,12 @@ public class PlayerMovementController : MonoBehaviour
     public bool IsJump() { return isJump; }
     public bool IsGround() { return isGround; }
 
+    public void BounceBack(int direction) {
+        gameObject.GetComponent<Rigidbody2D>().velocity = (new Vector2(0, 0));
+        gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(100f*direction, 200f), ForceMode2D.Impulse);
+        isDamageFall = true;
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Spring" && isGround == false)
@@ -125,6 +133,12 @@ public class PlayerMovementController : MonoBehaviour
             allGroundCollisions += 1;
             isSpecialJump = false;
             isGround = true;
+            if (isDamageFall == true) {
+                isDamageFall = false;
+                isJump = false;
+                hascomedown = true;
+            }
+            
         }
     }
     private void OnCollisionExit2D(Collision2D collision)
@@ -159,4 +173,5 @@ public class PlayerMovementController : MonoBehaviour
 
         }
     }
+
 }

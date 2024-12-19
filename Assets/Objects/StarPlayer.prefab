@@ -20,6 +20,7 @@ GameObject:
   - component: {fileID: 524247070071973739}
   - component: {fileID: 6025442638866465956}
   - component: {fileID: -2903888870736636074}
+  - component: {fileID: 5987645460661363410}
   m_Layer: 11
   m_Name: StarPlayer
   m_TagString: Player
@@ -88,7 +89,7 @@ SpriteRenderer:
   m_Size: {x: 48, y: 48}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &6025442638866465981
@@ -175,8 +176,6 @@ MonoBehaviour:
   damageJumpForce: 300
   facing: right
   isActive: 1
-  isGround: 0
-  allGroundCollisions: 0
   isCutscene: 1
   coin: {fileID: 8300000, guid: ccde74bcb7d10324d98e856851932554, type: 3}
   step: {fileID: 8300000, guid: 47eafd1ccc0e0d945b1724484ac59d12, type: 3}
@@ -342,3 +341,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e870c1ca3ce930342b0c135bfa0e66f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isGround: 0
+  allGroundCollisions: 0
+--- !u!114 &5987645460661363410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6025442638866465980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 521c3b3100b3b3c499cf731dea484cf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myRenderer: {fileID: 0}
+  shaderGUItext: {fileID: 0}
+  shaderSpritesDefault: {fileID: 0}
+  takeDamage: 0

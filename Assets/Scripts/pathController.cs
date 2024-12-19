@@ -7,8 +7,11 @@ public class pathController : MonoBehaviour
     public GameObject togglePath;
     public GameObject player;
     private EdgeCollider2D toggleCollider;
+    public string checkingDiredtion = "right";
     private int pickPath = 1;
     public string direction;
+    private bool isUp = false;
+    private bool isDown = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -23,7 +26,8 @@ public class pathController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        isUp = Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W);
+        isDown = Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S);
     }
     //when they exit trigger we want to make path 1 accessable or inaccessable
     //start with path being inaccessable to player
@@ -32,17 +36,20 @@ public class pathController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         direction = player.GetComponent<StarPlayerController>().facing;
-        if (direction == "right") 
+        if (direction == checkingDiredtion) 
         {
+            // if pressing up then 
             pickPath += 1;
+            if (collision.gameObject == player)
+            {
+                if (isUp & !isDown) return;
+                else if ((isDown & !isUp) | pickPath % 2 == 0)
+                {
+                    toggleCollider.isTrigger = true;
+                }
+            }
         }
-        
-        if (collision.gameObject == player && pickPath%2 == 0) {
-            toggleCollider.isTrigger = true;
-        }
-        //check if player
-        //set currently in triger = true;
-        // check if player was facing right when
+
     }
     private void OnTriggerExit2D(Collider2D collision)
     {

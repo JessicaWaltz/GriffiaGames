@@ -8,6 +8,7 @@ public class StarPlayerController : MonoBehaviour
     private float jumpPower = 275f;
 
     private Rigidbody2D rb;
+    private HealthController healthCounter;
 
     public Animator anim;
     private AnimatorClipInfo[] m_CurrentClipInfo;
@@ -22,25 +23,15 @@ public class StarPlayerController : MonoBehaviour
     private bool isLeft;
     private bool isRight;
     private bool isThrow;
+    private bool dead;
 
     public bool isActive;
-
-    //private bool isSpecialJump = false;
-    //private bool isJump = false;
-    //public bool isGround = false;
-    //private bool hascomedown = false;
 
     private bool didSpring = false;
     private bool hitEnemy = false;
 
-    private bool takeDamage = false;
-    private bool nockedBack = false;
-    //private float xLocationEnemy;
-    //private float xLocationPlayer;
 
     private float maxVelocity = -275f;
-
-    //public float allGroundCollisions = 0;
 
     public bool isCutscene = true;
 
@@ -51,6 +42,8 @@ public class StarPlayerController : MonoBehaviour
     public AudioClip spring;
 
     private AudioSource audioSource;
+    public Vector3 respawnLocation;
+
 
     //Have this be StarPlayerController, This is the only one that has an update, All controllers that Star uses will be in here
     //all related animations should be here and audio clips to be called
@@ -58,7 +51,7 @@ public class StarPlayerController : MonoBehaviour
     // sounds
 
     //movement,jump, flip, ground collisions all in one controller but different functions to call if used
-    
+
     //Damage taken should be its own controller
 
     //Coin collection
@@ -75,34 +68,50 @@ public class StarPlayerController : MonoBehaviour
     {
         anim = gameObject.GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        healthCounter = FindObjectOfType<HealthController>();
+        respawnLocation = transform.position;
+        IgnoreThisCollision("waterGround");
     }
     // Update is called once per frame
     void Update()
     {
         if (isActive == true)
         {
-            isUp = Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W);
-            isDown = Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S);
-            isLeft = Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A);
-            isRight = Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D);
-            isThrow = Input.GetKeyDown(KeyCode.J);
+            //Only allow inputs when not dead and not when falling due to taking damage
+            if (gameObject.GetComponent<PlayerMovementController>().isDamageFall == false && !healthCounter.IsDead()) 
+            {
+                isUp = Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.W);
+                isDown = Input.GetKey(KeyCode.DownArrow) || Input.GetKey(KeyCode.S);
+                isLeft = Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.A);
+                isRight = Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.D);
+                isThrow = Input.GetKeyDown(KeyCode.J);
+            }
 
             
             m_CurrentClipInfo = anim.GetCurrentAnimatorClipInfo(0);
 
+            //Player set to be in cutscene at beginning 
             anim.SetBool("isOppeningCutscene", isCutscene);
+            //If the cutscene is over then:
             if (!isCutscene)
             {
+                //Check other animation variables and apply max speed of gravity
                 AnimationVariables();
-                Movement();
                 MaxVelocity();
-                gameObject.GetComponent<PlayerProjectileController>().CheckThrow(isThrow,isUp,isDown,facing);
+                //If the player is not currently in a damage fall and they are not dead then
+                if (gameObject.GetComponent<PlayerMovementController>().isDamageFall == false && !healthCounter.IsDead()) { 
+                    //Allow player to move and shoot
+                    Movement();
+                    gameObject.GetComponent<PlayerProjectileController>().CheckThrow(isThrow, isUp, isDown, facing);
+                }
+                
             }
             
         }
     }
     void AnimationVariables()
     {
+        //These are the Animation Variables for the Character Star, Others might have slightly differing animations/conditions
         if (gameObject.name == "StarPlayer") {
             anim.SetBool("isUp", isUp);
             anim.SetBool("isDown", isDown);
@@ -112,13 +121,14 @@ public class StarPlayerController : MonoBehaviour
             anim.SetBool("facingRight", facing == "right");
             anim.SetBool("isSpace", Input.GetKey(KeyCode.Space));
             anim.SetBool("isJump", gameObject.GetComponent<PlayerMovementController>().IsJump());
-            anim.SetBool("takeDamage", takeDamage || nockedBack);
+            anim.SetBool("takeDamage", gameObject.GetComponent<PlayerMovementController>().isDamageFall);
             anim.SetBool("isGround", gameObject.GetComponent<PlayerMovementController>().IsGround());
             anim.SetBool("didSpring", didSpring);
             anim.SetBool("hitEnemy", hitEnemy);
             anim.SetBool("isThrow", isThrow);
             //anim.SetBool("sprung", gameObject.GetComponent<SpringController>().isSpring());
             anim.SetFloat("YSpeed", rb.velocity.y);
+            anim.SetBool("dead", healthCounter.IsDead());
 
             didSpring = false;
 
@@ -141,61 +151,52 @@ public class StarPlayerController : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
     }
+
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "Coin")
         {
             gameObject.GetComponent<PlayerAudioController>().AudioPlayerSoft(coin);
         }
-
+        else if (collision.gameObject.tag == "trigger") {
+            // save location of player when triggered
+            respawnLocation = transform.position;
+        }
     }
+
+    private void IgnoreThisCollision(string tag)
+    {
+        GameObject[] items = GameObject.FindGameObjectsWithTag(tag);
+        if (items != null)
+        {
+            foreach (GameObject item in items)
+            {
+                Collider2D[] itemColliders = item.GetComponentsInChildren<Collider2D>();
+                Collider2D[] objectColliders = GetComponentsInChildren<Collider2D>();
+                foreach (Collider2D itemCollider in itemColliders)
+                {
+                    foreach (Collider2D objectCollider in objectColliders)
+                    {
+                        Physics2D.IgnoreCollision(itemCollider, objectCollider);
+                    }
+                }
+            }
+        }
+    }
+    //In the case of death we want to:
+    //- Wait 3 seconds on dead frame
+    //- call Fade to Black controller to fade to black
+    //- While screen is black we want to check if lives are left.
+    //  - If there are lives left
+    //      - we want to add +5 to health and -1 life
+    //      - reset all spawn point triggers to isTriggered = false;
+    //      - destroy all spawned enemies
+    //      - place Player right before last spawn point trigger
+    //      - fade from black
+    //  - If no lives are left
+    //      - Display Game over screen over the black out
+    //      - have continue button and quit button
+    //      - continue button restarts the scene completely
+    //      - quit button returns you to menu
 }
-
-
-
-/*
- if (collision.gameObject.tag == "NeedWall")
-        {
-            AudioPlayerSoft(hit);
-            nockedBack = true;
-            isSpecialJump = true;
-            xLocationEnemy = collision.gameObject.GetComponent<Rigidbody2D>().transform.position.x;
-            xLocationPlayer = transform.position.x;
-        }
-*/
-
-/*void DamageCheck() {
-        if (takeDamage == true)//if enemy hit player
-        {
-            if (xLocationEnemy > xLocationPlayer)
-            {
-                // enemy is to right so player damage jumps left
-                rb.velocity = new Vector2(-175, jumpPower * 0.75f);
-            }
-            else
-            {
-                // enemy is to left so player damage jumps right
-                rb.velocity = new Vector2(175, jumpPower * 0.75f);
-            }
-            anim.SetBool("takeDamage", takeDamage);
-            takeDamage = false;
-            isSpecialJump = true;
-        }
-        else if (nockedBack == true)//if enemy hit player
-        {
-            //this is currently adding to current y velocity we want it to replace
-            if (xLocationEnemy > xLocationPlayer)
-            {
-                // enemy is to right so player damage jumps left
-                rb.velocity = new Vector2(-125, jumpPower * 1.25f);
-            }
-            else
-            {
-                // enemy is to left so player damage jumps right
-                rb.velocity = new Vector2(125, jumpPower * 1.25f);
-            }
-            anim.SetBool("takeDamage", nockedBack);
-            nockedBack = false;
-            isSpecialJump = true;
-        }
-    }*/
